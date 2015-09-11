@@ -57,7 +57,7 @@ for j=1:8
   nu(6,j)=rem.nus(j);
   %EO
   G(7,j)=eo.gab(j);
-  nu(7,j)=eo.gab(j);
+  nu(7,j)=eo.nus(j);
    
 end
 %steadyparams
@@ -168,6 +168,7 @@ A=(1-J_ee-J_ei).*(1-J_sr.*J_rs)-J_es.*(J_se+J_sr.*J_re);
 
 
 Qe=(Ns./A).*(J_ei.*J_es+J_es-J_ee.*J_ei);
+
 Qi=(Ns./A).*(J_es.*J_es+J_es-J_es.*J_ee);
 Qr=(Ns./A).*(J_ei.*J_ee+J_es.*J_re-J_es.*J_re.*J_ei+J_rs-J_rs.*J_ei-J_rs.*J_ee+J_rs.*J_ee.*J_ei+J_ei.*J_es.*J_re);
 Qs=(Ns./A).*(1+J_ee.*J_ei-J_ee-J_ei-J_ei.*J_ee);
@@ -175,6 +176,7 @@ Qn=phi_n*ones(1,length(w));
 Q=[Qe;Qi;Qr;Qs];
 phi_e=Qe./Gamma_e;
 for i=2:length(w)
+   
     %_see
     dsee(1)=(1/2*pi)*conj(Hw(1))*Qe(1)*conj(Gamma_e(1))*conj(Qe(1));
     dsee(i)=(1/2*pi)*conj(Hw(i))*Qe(i)*conj(Gamma_e(i))*conj(Qe(i));
@@ -262,20 +264,46 @@ dZdt(c)=-(dGdt(c,10)*G_rs+G_sr*dGdt(c,8))*(alpha*beta)/(alpha+beta)^2;
 
 end
 
-% radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
-% dUdt=(real(dXdt))./real(radius);
-% dVdt=(real(dYdt))./real(radius);
-% 
-% quiver(real(X),real(Y),dUdt,dVdt,0.25)
-% hold on
-% x=linspace(0.25,1,10);
-% y=1-x;
-% 
-% plot(x,y,'--','color','green')
-% hold on
-%scatter(X,Y)
+radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
+dUdt=(real(dXdt))./real(radius);
+dVdt=(real(dYdt))./real(radius);
 
-quiver(Gfinal(:,1),Gfinal(:,2),real(dGdt(:,1))./sqrt(real(dGdt(:,1)).^2+real(dGdt(:,2).^2)),real(dGdt(:,2))./sqrt(real(dGdt(:,1)).^2+real(dGdt(:,2)).^2),0.25)
+quiver(real(X),real(Y),dUdt,dVdt,0.25)
+hold on
+x=linspace(0,1,10);
+y=1-x;
+
+plot(y,x,'--','color','black')
+hold on
+scatter(X,Y)
+xlabel('X')
+ylabel('Y')
+axis square
+
+% plot(f,Qe)
+% hold on
+% plot(f,Qi,'red')
+% hold on
+% plot(f,Qr,'green')
+% hold on
+% plot(f,Qs,'black')
+% hold on
+% plot(f,Qn,'--')
+% freq=w/(2*pi);
+% subplot(1,2,1)
+% plot(freq,dsee,freq,dsei,freq,dses,freq,dsie,freq,dsii,freq,dsis,freq,dsre,freq,dsrs,'--',freq,dsse,'--',freq,dssr,'--',freq,dssn,':')
+% xlabel('f(Hz)')
+% ylabel('Integrand')
+% legend('ds_{ee}/dt','ds_{ei}/dt','ds_{es}/dt','ds_{ie}/dt','ds_{ii}/dt','ds_{is}/dt','ds_{re}/dt','ds_{rs}/dt','ds_{se}/dt','ds_{sr}/dt','ds_{sn}/dt')
+% 
+% subplot(1,2,2)
+% plot(freq,Iee,freq,Iei,freq,Ies,freq,Iie,freq,Iii,freq,Iis,freq,Ire,freq,Irs,'--',freq,Ise,'--',freq,Isr,'--',freq,Isn,':')
+% legend('I_{ee}','I_{ei}','I_{es}','I_{ie}','I_{ii}','I_{is}','I_{re}','I_{rs}','I_{se}','I_{sr}','I_{sn}')
+% xlabel('f_{max}(Hz)')
+% ylabel('Integral')
+
+
+%quiver(nufinal(:,1),nufinal(:,2),real(Ilast(:,1))./sqrt(real(Ilast(:,1)).^2+real(Ilast(:,2).^2)),real(Ilast(:,2))./sqrt(real(Ilast(:,1)).^2+real(Ilast(:,2)).^2),0.25)
 
 
 % sigma=0.006;

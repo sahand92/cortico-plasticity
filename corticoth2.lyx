@@ -1,0 +1,1820 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\headheight 2cm
+\headsep 2cm
+\footskip 1cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Neural Field Theory of Corticothalamic Plasticity
+\end_layout
+
+\begin_layout Author
+Sahand Assadzadeh
+\end_layout
+
+\begin_layout Date
+14/8/2015
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+Aims: Investigate the role of plasticity on brain states (sleep/wake) in
+ the corticothalamic model
+\end_layout
+
+\begin_layout Standard
+Abstract:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+setcounter{section}{1}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Propagator and matrix formulation of neural interactions
+\end_layout
+
+\begin_layout Standard
+Conventionally, nodes of a neural network have represented the individual
+ neurons that make up that network.
+ Modelling the dynamics of such networks, with a large number of nodes,
+ each with it's own properties such as firing rate, action potential, and
+ duration, is a computationally intractable problem.
+ In the Neural Field Theory (NFT) approach, the activity of populations
+ of neurons can be reduced to distribution functions describing their probabalis
+tic evolution.
+ 
+\end_layout
+
+\begin_layout Standard
+In NFT, the dynamics of the population of neurons are characterized by 3
+ functions, which form a closed nonlinear set:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\phi_{ab}(\mathbf{r},t)$
+\end_inset
+
+ is the weighted average rate at which spikes arrive at (
+\begin_inset Formula $\mathbf{r},t$
+\end_inset
+
+) and constitutes of signals to population 
+\begin_inset Formula $a$
+\end_inset
+
+ from population 
+\begin_inset Formula $b$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $V_{a}(\mathbf{r},t)$
+\end_inset
+
+ is the average membrane potential in population 
+\begin_inset Formula $a$
+\end_inset
+
+.
+ This is the sum of all the incoming synaptic inputs from other populations.
+ 
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $Q_{a}(\mathbf{r},t)$
+\end_inset
+
+ is the average firing rate of neurons in population 
+\begin_inset Formula $a$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Since spikes in neuron 
+\begin_inset Formula $a$
+\end_inset
+
+ are caused by neural inputs (from various afferent populations labelled
+ 
+\begin_inset Formula $b$
+\end_inset
+
+ and external sources 
+\begin_inset Formula $N_{a}$
+\end_inset
+
+), we can write 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Q_{a}(\mathbf{r},t)=\underset{b}{\sum}\int\int\Lambda_{ab}^{(0)}(\mathbf{r},t,\mathbf{r}',t')Q_{b}(\mathbf{r}',t')d\mathbf{r}'dt+N_{a}(\mathbf{r},t),
+\end{equation}
+
+\end_inset
+
+where there propagator 
+\begin_inset Formula $\Lambda_{ab}^{(0)}(\mathbf{r},t,\mathbf{r}',t')$
+\end_inset
+
+ quantifies the activity evoked in population 
+\begin_inset Formula $a$
+\end_inset
+
+ at location 
+\begin_inset Formula $\mathbf{r},t$
+\end_inset
+
+ by activity directily afferent from neurons of population 
+\begin_inset Formula $b$
+\end_inset
+
+ at 
+\begin_inset Formula $\mathbf{r}',t'.$
+\end_inset
+
+ We can write Eq.(1) in the more compact matrix notation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{Q}(x)=\int\mathbf{\Lambda}^{(0)}(x,x')\mathbf{Q}(x')dx'+\mathbf{N}(x).
+\end{equation}
+
+\end_inset
+
+In this notation the column vector 
+\begin_inset Formula $\mathbf{Q}$
+\end_inset
+
+ is a column matrix whose elements are the fields 
+\begin_inset Formula $Q_{1}(x),Q_{2}(x),...,Q_{p}(x),$
+\end_inset
+
+ where 
+\begin_inset Formula $x$
+\end_inset
+
+ denotes the vector consisting of position 
+\begin_inset Formula $\mathbf{r}$
+\end_inset
+
+ and time 
+\begin_inset Formula $t$
+\end_inset
+
+.
+ If we discretize the space and time coordinates, we can replace the population
+ label 
+\begin_inset Formula $a$
+\end_inset
+
+ and spatiotemporal coordinates 
+\begin_inset Formula $x$
+\end_inset
+
+ by a collective label 
+\begin_inset Formula $m$
+\end_inset
+
+ and the set 
+\begin_inset Formula $b,x'$
+\end_inset
+
+ by 
+\begin_inset Formula $n$
+\end_inset
+
+ , so that 
+\begin_inset Formula $\Lambda_{ab}^{(0)}(x,x')=\Lambda_{mn}^{(0)}$
+\end_inset
+
+.
+ The labeling of 
+\begin_inset Formula $\mathbf{Q}$
+\end_inset
+
+ is correspondingly extended to designate not just population but also location
+ and time.
+ Also, the integrals over 
+\begin_inset Formula $\mathbf{r}'$
+\end_inset
+
+and 
+\begin_inset Formula $t'$
+\end_inset
+
+ can be replaced by the sums over elements that are inherent in matrix multiplic
+ation.
+ In matrix notation (2) becomes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+\mathbf{Q} & = & \mathbf{\Lambda}^{(0)}\mathbf{Q}+\mathbf{N},\\
+ & = & \left[\mathbf{I}-\mathbf{\Lambda}^{(0)}\right]{}^{-1}\mathbf{N},\\
+ & = & \mathbf{T}\mathbf{N},\\
+ & = & \left(\mathbf{I}+\mathbf{\Lambda}\right)\mathbf{N},
+\end{eqnarray}
+
+\end_inset
+
+where 
+\begin_inset Formula $\mathbf{I}$
+\end_inset
+
+ is the unit matrix and the superscript 
+\begin_inset Formula $-1$
+\end_inset
+
+ denotes the matrix inverse [1].
+ 
+\end_layout
+
+\begin_layout Subsection
+Neural field theory and the corticothalamic model system
+\end_layout
+
+\begin_layout Standard
+Perturbations 
+\begin_inset Formula $Q_{a}$
+\end_inset
+
+ of mean firing rate can be approximated as being linearly related to perturbati
+ons of the mean soma voltage 
+\begin_inset Formula $V_{a}$
+\end_inset
+
+, with
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Q_{a}=\rho_{a}V_{a}(\mathbf{r},t),
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\rho_{a}$
+\end_inset
+
+ is the slope of the full nonlinear response curve that relates 
+\begin_inset Formula $Q_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $V_{a}$
+\end_inset
+
+, evaluated at the fixed point; 
+\begin_inset Formula $\rho_{a}$
+\end_inset
+
+ is assumed constant here.
+ 
+\end_layout
+
+\begin_layout Standard
+The perturbation 
+\begin_inset Formula $V_{a}$
+\end_inset
+
+ to mean soma potential is a sum of contributions 
+\begin_inset Formula $V_{ab}$
+\end_inset
+
+ from various other populations 
+\begin_inset Formula $b$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+V_{a}(\mathbf{r},t)=\underset{b}{\sum}V_{ab}(\mathbf{r},t).
+\end{equation}
+
+\end_inset
+
+The subpotential 
+\begin_inset Formula $V_{ab}$
+\end_inset
+
+ responds to the incoming field of afferent activity 
+\begin_inset Formula $\phi_{ab}$
+\end_inset
+
+ from neurons 
+\begin_inset Formula $b$
+\end_inset
+
+ according to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+D_{ab}V_{ab}(\mathbf{r},t)=\nu_{ab}\phi_{ab}(\mathbf{r},t-\tau_{ab}),
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+D_{ab}=\frac{1}{\alpha_{ab}\beta_{ab}}\frac{d}{dt^{2}}+\left(\frac{1}{\alpha_{ab}}+\frac{1}{\beta_{ab}}\right)\frac{d}{dt}+1,
+\end{equation}
+
+\end_inset
+
+where 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\alpha$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+ are the characteristic rates of soma voltage decay and rise, respectively.
+ The activity fields 
+\begin_inset Formula $\phi_{ab}$
+\end_inset
+
+ derive from the source 
+\begin_inset Formula $Q_{b}$
+\end_inset
+
+ and propagate according to the propagator equation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\phi_{ab}(\mathbf{r},t)=\int\int\Gamma_{ab}(\mathbf{r},\mathbf{r}',t,t')Q_{b}(\mathbf{r}',t')d\mathbf{r}'dt'.
+\end{equation}
+
+\end_inset
+
+In the case of full translational invariance of propagators, Eq.(11) can
+ be written as
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\phi_{ab}(\mathbf{r},t)=\int\int\Gamma_{ab}(\mathbf{r}-\mathbf{r}',t-t')Q_{b}(\mathbf{r}',t')d\mathbf{r}'dt',
+\end{equation}
+
+\end_inset
+
+whose Fourier transform is 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\phi_{ab}(\mathbf{k},\omega)=\Gamma_{ab}(\mathbf{k},\omega)Q_{b}(\mathbf{k},\omega),
+\end{equation}
+
+\end_inset
+
+in which convolutions have become products.
+ 
+\end_layout
+
+\begin_layout Standard
+Assuming translational invariance for propagators and Fourier transforming,
+ Eq.(1) becomes 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Q_{a}(\mathbf{k},\omega)=\underset{b}{\sum}\Lambda_{ab}^{(0)}(\mathbf{k},\omega)Q_{b}(\mathbf{k},\omega)+N_{a}(\mathbf{k},\omega),
+\end{equation}
+
+\end_inset
+
+while using (7)-(10) and Fourier transforming we can write
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Q_{a}(\mathbf{k},\omega)=\underset{b}{\sum}G_{ab}L_{ab}(\omega)e^{i\omega\tau_{ab}}\phi_{ab}(\mathbf{k},\omega),
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $G_{ab}=\rho_{a}\nu_{ab}$
+\end_inset
+
+ and 
+\begin_inset Formula $L_{ab}(\omega)=[(1-i\omega/\alpha)(1-i\omega/\beta)]^{-1}$
+\end_inset
+
+.
+ From (13)-(15), we deduce that 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{ab}^{(0)}=G_{ab}L_{ab}(\omega)e^{i\omega\tau_{ab}}\Gamma_{ab}(\mathbf{k},\omega).
+\end{equation}
+
+\end_inset
+
+A number of forms of 
+\begin_inset Formula $\Gamma_{ab}$
+\end_inset
+
+ have been proposed, including integral forms that are either local or non-local
+, either of which can be employed in the analysis above.
+ A particular class of axonal propagator corresponds to differential equations
+ (typically damped wave equations) for the fields 
+\begin_inset Formula $\phi_{ab}$
+\end_inset
+
+.
+ Using one such form [1], we can write
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+D_{ab}\phi_{ab}(\mathbf{r},t)=Q_{b}(\mathbf{r},t),
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+D_{ab}=\frac{1}{\gamma_{ab}^{2}}\frac{\partial^{2}}{\partial t^{2}}+\frac{2}{\gamma_{ab}}\frac{\partial}{\partial t}+1-r_{ab}^{2}\nabla^{2},
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $r_{ab}$
+\end_inset
+
+ is the characteristic range of axons projecting to neurons 
+\begin_inset Formula $a$
+\end_inset
+
+ from 
+\begin_inset Formula $b$
+\end_inset
+
+, 
+\begin_inset Formula $v_{ab}$
+\end_inset
+
+ is the mean axonal velocity, and 
+\begin_inset Formula $\gamma_{ab}=v_{ab}/r_{ab}$
+\end_inset
+
+ is an effective damping rate that reflects the rate at which spikes traverse
+ the finite range of axons.
+ Eq.(17) and (18) imply
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+\Gamma_{ab}(\mathbf{k},\omega) & = & \frac{1}{(1-i\omega/\gamma_{ab})^{2}+k^{2}r_{ab}^{2}},\\
+ & = & \frac{1}{D_{ab}(\mathbf{k},\omega)}.
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The matrices in Eq.(3) can now be constructed.
+ The propagator matrix 
+\begin_inset Formula $\mathbf{\Lambda}^{(0)}$
+\end_inset
+
+ can be deduced from the connection matrix for the corticothalamic system
+ [1]
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{\Lambda}^{(0)}=\left(\begin{array}{cccc}
+\Lambda_{ee}^{(0)} & \Lambda_{ei}^{(0)} & 0 & \Lambda_{es}^{(0)}\\
+\Lambda_{ie}^{(0)} & \Lambda_{ii}^{(0)} & 0 & \Lambda_{is}^{(0)}\\
+\Lambda_{re}^{(0)} & 0 & 0 & \Lambda_{rs}^{(0)}\\
+\Lambda_{se}^{(0)} & 0 & \Lambda_{sr}^{(0)} & 0
+\end{array}\right)
+\end{equation}
+
+\end_inset
+
+and
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{Q}=\left(\begin{array}{c}
+Q_{e}\\
+Q_{i}\\
+Q_{r}\\
+Q_{s}
+\end{array}\right),
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{N}=\left(\begin{array}{c}
+0\\
+0\\
+0\\
+N_{s}
+\end{array}\right).
+\end{equation}
+
+\end_inset
+
+The transfer matrix of the system 
+\begin_inset Formula $\mathbf{T}$
+\end_inset
+
+ is calculated using Eq.(4).
+ Multiplication with 
+\begin_inset Formula $\mathbf{N}$
+\end_inset
+
+ then gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{Q}=\frac{N_{s}}{A}\left(\begin{array}{c}
+\Lambda_{ei}^{(0)}\Lambda_{is}^{(0)}+\Lambda_{es}^{(0)}-\Lambda_{ee}^{(0)}\Lambda_{ii}^{(0)}\\
+\Lambda_{es}^{(0)}\Lambda_{is}^{(0)}+\Lambda_{is}^{(0)}-\Lambda_{is}^{(0)}\Lambda_{ee}^{(0)}\\
+\Lambda_{ei}^{(0)}\Lambda_{ie}^{(0)}+\Lambda_{es}^{(0)}\Lambda_{re}^{(0)}-\Lambda_{es}^{(0)}\Lambda_{re}^{(0)}\Lambda_{ii}^{(0)}+\Lambda_{rs}^{(0)}-\Lambda_{rs}^{(0)}\Lambda_{ii}^{(0)}-\Lambda_{rs}^{(0)}\Lambda_{ee}^{(0)}+\Lambda_{rs}^{(0)}\Lambda_{ee}^{(0)}\Lambda_{ii}^{(0)}+\Lambda_{ei}^{(0)}\Lambda_{is}^{(0)}\Lambda_{re}^{(0)}\\
+1+\Lambda_{ee}^{(0)}\Lambda_{ii}^{(0)}-\Lambda_{ee}^{(0)}-\Lambda_{ii}^{(0)}-\Lambda_{ei}^{(0)}\Lambda_{ie}^{(0)}
+\end{array}\right),
+\end{equation}
+
+\end_inset
+
+where
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathrm{A=det}\left[\mathbf{I}-\mathbf{\Lambda}^{(0)}\right]=\left[1-\Lambda_{ee}^{(0)}-\Lambda_{ei}^{(0)}\right]\left[1-\Lambda_{sr}^{(0)}\Lambda_{rs}^{(0)}\right]-\Lambda_{es}^{(0)}\left[\Lambda_{se}^{(0)}+\Lambda_{sr}^{(0)}\Lambda_{re}^{(0)}\right].
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the system model used, it has been found that 
+\begin_inset Formula $r_{ab}\thickapprox0$
+\end_inset
+
+ is a reasonable approximation for 
+\begin_inset Formula $b=i,r,s,$
+\end_inset
+
+ in which 
+\begin_inset Formula $\Gamma_{ab}(\mathbf{k}$
+\end_inset
+
+,
+\begin_inset Formula $\omega)=1$
+\end_inset
+
+.
+ Moreover, since the average number of synapses linking cortical neurons
+ of types 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ is closely proportional to the numbers of neurons involved, and synaptic
+ properties depend on the afferent neuron, we can make the random connectivity
+ approximation that 
+\begin_inset Formula $\Lambda_{ib}=\Lambda_{eb}$
+\end_inset
+
+ for 
+\begin_inset Formula $b=e,i,s$
+\end_inset
+
+.
+ These approximations yield
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+\Lambda_{ee}^{(0)} & = & \Lambda_{ie}^{(0)}=\frac{G_{ee}L}{(1-i\omega/\gamma_{ee})^{2}+k^{2}r_{ee}^{2}},\\
+ & = & J_{ee}\Gamma_{e},
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{ei}^{(0)}=\Lambda_{ii}^{(0)}=G_{ei}L=J_{ei},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{es}^{(0)}=\Lambda_{is}^{(0)}=G_{es}Le^{i\omega\tau_{es}}=J_{es},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{re}^{(0)}=G_{re}Le^{i\omega\tau_{re}}=J_{re},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{se}^{(0)}=G_{se}Le^{i\omega\tau_{se}}=J_{se},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{rs}^{(0)}=G_{rs}L=J_{rs},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{sr}^{(0)}=G_{sr}L=J_{sr},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\Lambda_{sn}^{(0)}=G_{sn}L=J_{sn},
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $J_{ab}=G_{ab}Le^{i\omega\tau_{ab}}$
+\end_inset
+
+ and 
+\begin_inset Formula $N_{s}=\Lambda_{sn}^{(0)}\phi_{sn}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Brain states and spectral stability
+\end_layout
+
+\begin_layout Subsection
+Network Plasticity
+\end_layout
+
+\begin_layout Standard
+There are many rules proposed for inducing changes in connection strength
+ between neurons within a network.
+ These have the general form given by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+(\delta s_{ab})_{j}\propto\sum_{i}H(t'_{j}-t_{i}),
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $t_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $t'_{j}$
+\end_inset
+
+ are the times of pre- and postsynaptic spikes, 
+\begin_inset Formula $i$
+\end_inset
+
+ and 
+\begin_inset Formula $j$
+\end_inset
+
+, and 
+\begin_inset Formula $H$
+\end_inset
+
+ is a window function.
+ For our case here, we look at the experimentally based rules of spike-timing-de
+pendent plasticity (STDP) and correlation-dependent-plasticity (CDP), where
+ the temporal interval 
+\begin_inset Formula $\tau=(t'_{j}-t_{i})$
+\end_inset
+
+ between presynaptic and postsynaptic spikes determines the resulting change
+ in synaptic strength 
+\begin_inset Formula $s_{ab}$
+\end_inset
+
+ , for times within the temporal plasticity window.
+ In order to incorporate these rules into our field model we write the sum
+ over spikes in Eq.(35) as an integral over spikes approximated as delta
+ functions:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+(\delta s_{ab})_{j}\propto\int_{-\infty}^{\infty}d\tau H(\tau)\phi_{ab}(t),
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\phi_{ab}(t)=\sum_{i}\delta(t-t_{i}).
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To determine the rate of change of the mean synaptic strength 
+\begin_inset Formula $s_{ab}$
+\end_inset
+
+ averaged over many neurons, Eq.(36) is multiplied by the postsynaptic spike
+ rate 
+\begin_inset Formula $Q_{a}$
+\end_inset
+
+ and averaged over a time windows of characteristic width 
+\begin_inset Formula $T$
+\end_inset
+
+ around 
+\begin_inset Formula $t,$
+\end_inset
+
+ where 
+\begin_inset Formula $T$
+\end_inset
+
+ is longer than the timescales of the plasticity window 
+\begin_inset Formula $H$
+\end_inset
+
+ and of pre- and postsynaptic interspike intervals, but shorter than the
+ synaptic evolution.
+ This yield the following equation for the evolution of 
+\begin_inset Formula $s_{ab}$
+\end_inset
+
+on the timescales of order 
+\begin_inset Formula $T$
+\end_inset
+
+ or longer:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{d\langle s_{ab}(\mathbf{r},t)\rangle}{dt}=\int\langle Q_{a}(\mathbf{r},t+\tau)H_{ab}(\tau)\phi_{ab}(\mathbf{r},t)\rangle d\tau,\label{eq:38}
+\end{equation}
+
+\end_inset
+
+where angle brackets denote the average over the window of width 
+\begin_inset Formula $T$
+\end_inset
+
+ or longer.
+ 
+\end_layout
+
+\begin_layout Standard
+Large scale brain activity is characterized by a steady state plus perturbations.
+ In the steady state, 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\langle ds_{ab}/dt\rangle=0$
+\end_inset
+
+ and net plasticity is due to perturbations.
+ Hence, in neural populations we reinterpret 
+\begin_inset Formula $Q_{a}$
+\end_inset
+
+ and 
+\begin_inset Formula $\phi_{a}$
+\end_inset
+
+in Eq.(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:38"
+
+\end_inset
+
+) as perturbations from mean values and write these as 
+\begin_inset Formula $\delta Q_{a}(t)=Q_{a}(t)-Q_{a}^{(0)}$
+\end_inset
+
+ and 
+\begin_inset Formula $\delta\phi_{ab}(t)=\phi_{ab}(t)-\phi_{ab}^{(0)}$
+\end_inset
+
+, where 
+\begin_inset Formula $(0)$
+\end_inset
+
+ labels the mean values.
+ The product of the steady state terms has no net contribution and the terms
+ linear in the perturbations time average to zero.
+ Writing the quantities on the right of Eq.(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:38"
+
+\end_inset
+
+) as Fourier transforms, and evaluating the integrals over 
+\begin_inset Formula $t$
+\end_inset
+
+ and 
+\begin_inset Formula $\tau$
+\end_inset
+
+, gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{ds_{ab}(t)}{dt}=\int\frac{d\omega}{2\pi}H_{ab}^{*}(\omega)\delta Q_{a}(\omega)\delta\phi_{ab}^{*}(\omega),\label{eq:39}
+\end{equation}
+
+\end_inset
+
+where the astrix denotes complex conjugates and the spatial dependency has
+ been relaxed 
+\begin_inset Formula $(\mathbf{k}'=\mathbf{k}).$
+\end_inset
+
+ Since 
+\begin_inset Formula $G_{ab}$
+\end_inset
+
+ varies with the change in 
+\begin_inset Formula $s_{ab}$
+\end_inset
+
+, on the plasticity timescale which is much slower than the timescale on
+ which 
+\begin_inset Formula $Q_{a}$
+\end_inset
+
+ fluctuates, we assume that the gains are constant.
+ Applying the above equation to the corticothalamic model yields 
+\begin_inset Formula $10$
+\end_inset
+
+ equations corresponding to the non-zero elements of the connectivity matrix
+ (since we know that 
+\begin_inset Formula $s'_{ab}=0$
+\end_inset
+
+ ) for the cases where 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ are not connected.
+ This could also be used to find the constraints on our values of 
+\begin_inset Formula $G_{ab}$
+\end_inset
+
+).
+ In matrix notation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\mathbf{s'}=\int\frac{d\omega}{2\pi}\mathbf{H^{*}\Gamma^{*}}\mathbf{Q}\mathbf{Q}^{\dagger}.\label{eq:40}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Window Function
+\end_layout
+
+\begin_layout Standard
+In evaluating (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:38"
+
+\end_inset
+
+) we use the form
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+H(\tau) & = & A^{+}exp(-\tau/t_{p}),\;\tau>0,\label{eq:41}\\
+H(\tau) & = & A^{-}exp(\tau/t_{p}),\;\tau\leq0,\label{eq:42}
+\end{eqnarray}
+
+\end_inset
+
+where 
+\begin_inset Formula $t_{p}$
+\end_inset
+
+ is the plasticity timescale and the 
+\begin_inset Formula $A^{\pm}$
+\end_inset
+
+ are constants.
+ This general form includes all possible combinations of signs of CDP and
+ STDP.
+\end_layout
+
+\begin_layout Standard
+Fourier transformation of Eq.(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:41"
+
+\end_inset
+
+-
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:42"
+
+\end_inset
+
+) gives
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+H(\omega)=\frac{H_{0}+i\omega t_{p}H_{1}}{1+(\omega t_{p})^{2}},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+with 
+\begin_inset Formula $H_{0}=(A^{+}+A^{-})t_{p}$
+\end_inset
+
+ and 
+\begin_inset Formula $H_{1}=(A^{+}-A^{-})t_{p}$
+\end_inset
+
+, where 
+\begin_inset Formula $H_{1}=0$
+\end_inset
+
+ and 
+\begin_inset Formula $H_{0}=0$
+\end_inset
+
+ correspond to CDP and STDP respectively.
+ In our analysis from here on we employ the time symmetric STDP window with
+ 
+\begin_inset Formula $t_{p}=0.01$
+\end_inset
+
+ seconds.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename ../Desktop/figures/window-stdp.png
+	scale 40
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+STDP plasticity window and its Fourier transform 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Plasticity integrals
+\end_layout
+
+\begin_layout Standard
+Evaluating the integral in Eq.(
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:40"
+
+\end_inset
+
+) reveals the strong dependence of plasticity dynamics on stimulus frequency.
+ The results for values of gains corresponding to the wake state are illustrated
+ in Fig.(2).
+ The integrand shows strong resonances at the 
+\begin_inset Formula $f=\alpha$
+\end_inset
+
+ and 
+\begin_inset Formula $2\alpha$
+\end_inset
+
+ frequencies corresponding to the corticothalamic feedback loop.
+ As a consequence there is a significant contribution to the plasticity
+ integral at these resonances.
+ Important to note is the large plasticity of the excitatory population
+ in the cortex.
+ This is a result of the 
+\begin_inset Formula $(1-i\omega/\gamma_{ee})^{2}$
+\end_inset
+
+ term in the denominator in 
+\begin_inset Formula $Q_{e}$
+\end_inset
+
+.
+ Also, the STDP plasticity window in the frequency domain peaks at 
+\begin_inset Formula $\omega=0$
+\end_inset
+
+, where it has a maximum contribution to the integrand and decreases hyperbolicl
+y as it is inversely proportional to 
+\begin_inset Formula $\omega.$
+\end_inset
+
+ At large 
+\begin_inset Formula $\omega$
+\end_inset
+
+ the magnitude of the window function and the spectral power diminish to
+ zero and thereby stablize the integrals, so that at 
+\begin_inset Formula $f_{max}$
+\end_inset
+
+, 
+\begin_inset Formula $ds_{ab}/dt$
+\end_inset
+
+ reaches its maximum value.
+ Furthermore, at connections where also an inverse connection exists, the
+ integrals are equal and opposite in sign, i.e.
+ 
+\begin_inset Formula $ds_{ab}/dt=-ds_{ba}/dt$
+\end_inset
+
+ .
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename ../Desktop/figures/w integrand.png
+	scale 50
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Left: plasticity integrands evaluated for the 10 different connections in
+ the corticothalamic network at wake.
+ Right: corresponding integrals calculated up to 45 Hz.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The plasticity at typical wake and sleep brain states is depicted in Fig.(3).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename ../Desktop/figures/w.png
+	scale 40
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+wake
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename ../Desktop/figures/N3.png
+	scale 40
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+sleep
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Flow portraits
+\end_layout
+
+\begin_layout Standard
+Calculating 
+\begin_inset Formula $dG/dt$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+G'_{ab}=\frac{dG_{ab}}{dt}=\rho N_{ab}\frac{ds_{ab}}{dt}
+\end{equation}
+
+\end_inset
+
+For simplicity we assume that 
+\begin_inset Formula $N_{ab}=1$
+\end_inset
+
+, and 
+\begin_inset Formula $\rho$
+\end_inset
+
+ is calculated at 
+\begin_inset Formula $s_{ab}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+X=\frac{G_{ee}}{1-G_{ei}},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Y=\frac{G_{ese}+G_{esre}}{(1-G_{srs})(1-G_{ei})},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Z=-G_{srs}\frac{\alpha\beta}{(\alpha+\beta)^{2}}.
+\end{equation}
+
+\end_inset
+
+The derivatives are then given by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{dX}{dt}=\frac{(1-G_{ei})G'_{ee}+G_{ee}G'_{ei}}{(1-G_{ei})^{2}},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{dY}{dt}=\frac{(1-G_{srs})(1-G_{ei})(G'_{ese}+G'_{esre})-(G_{ese}+G_{esre})(G'_{srs}G_{ei}+G_{srs}G'_{ei}-G'_{srs}-G'_{ei})}{\left[(1-G_{srs})(1-G_{ei})\right]{}^{2}},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\frac{dZ}{dt}=-G'_{srs}\frac{\alpha\beta}{(\alpha+\beta)^{2}},
+\end{equation}
+
+\end_inset
+
+where
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+G'_{ese}=G'_{es}G_{se}+G_{es}G'_{se},
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+G'_{esre}=G_{es}G_{sr}G'_{re}+G_{re}(G_{es}G'_{sr}+G'_{es}G_{sr}),
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+G'_{srs}=G'_{sr}G_{rs}+G_{sr}G'_{rs}.
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Converting gains to connection strengths
+\end_layout
+
+\begin_layout Standard
+*Next step*
+\end_layout
+
+\begin_layout Itemize
+Evaluate the integral and check the plot of 
+\begin_inset Formula $\mathbf{s'}$
+\end_inset
+
+ against 
+\begin_inset Formula $\omega$
+\end_inset
+
+ for given values of 
+\begin_inset Formula $G_{ab}$
+\end_inset
+
+, 
+\begin_inset Formula $\tau_{ab}$
+\end_inset
+
+, 
+\begin_inset Formula $H_{ab}$
+\end_inset
+
+, 
+\begin_inset Formula $\alpha,$
+\end_inset
+
+
+\begin_inset Formula $\beta$
+\end_inset
+
+, 
+\begin_inset Formula $r_{ee}$
+\end_inset
+
+, 
+\begin_inset Formula $\gamma_{ee}$
+\end_inset
+
+.
+ Are there any more simplifications needed before proceeding? 
+\end_layout
+
+\begin_layout Itemize
+Stability Analysis: Check the determinant for singularities.
+ The 
+\begin_inset Formula $\omega=0$
+\end_inset
+
+ case corresponds to saddle-node bifurcations.
+ At higher frequencies (
+\begin_inset Formula $\omega\gg\alpha$
+\end_inset
+
+), there will be other dynamical features...
+\end_layout
+
+\begin_layout Itemize
+Investigate dynamical stability in connection strength space
+\end_layout
+
+\begin_layout Subsection
+Spectral analysis and saddle-node bifurcation
+\end_layout
+
+\begin_layout Standard
+The denominator 
+\begin_inset Formula $\mathrm{det}\left[\mathbf{I}-\mathbf{\Lambda}^{(0)}\right]=\mathrm{det}\mathbf{A}$
+\end_inset
+
+, plays a significant role in determining the plasticity dynamics of the
+ system.
+ At values of 
+\begin_inset Formula $\omega$
+\end_inset
+
+ where 
+\begin_inset Formula $|$
+\end_inset
+
+
+\begin_inset Formula $\mathrm{det}\mathbf{A}|^{2}$
+\end_inset
+
+ is close to zero, there will be enhanced plasticity, as 
+\begin_inset Formula $\mathbf{s}'$
+\end_inset
+
+ approches infinity.
+ Setting 
+\begin_inset Formula $\mathrm{det}\mathbf{A}=0$
+\end_inset
+
+ and looking at the 
+\begin_inset Formula $\omega=0$
+\end_inset
+
+ case, Eq.(25) simplifies to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\left[1-G_{ee}-G_{ei}\right]\left[1-G_{sr}G_{rs}\right]-G_{es}\left[G_{se}+G_{sr}G_{re}\right]=0
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\left[1-G_{ee}-G_{ei}\right]\left[1-G_{srs}\right]-G_{ese}-G_{erse}=0
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Stability.
+\end_layout
+
+\begin_layout Subsection
+Computation
+\end_layout
+
+\begin_layout Enumerate
+Using Neurofield and assuming 
+\begin_inset Formula $\phi_{ab}=Q_{b}$
+\end_inset
+
+ , calculate the 10 
+\begin_inset Formula $s'_{ab}$
+\end_inset
+
+ 's, and plot each against 
+\begin_inset Formula $\omega$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Try 
+\begin_inset Formula $G_{ab}$
+\end_inset
+
+ values for different sleep states and look at the sign of 
+\begin_inset Formula $s'_{ab}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Check power spectra of 
+\begin_inset Formula $\phi_{e}$
+\end_inset
+
+ for parameter matching of sleep states.
+ Plot power spectrum for wake, and check the sign of 
+\begin_inset Formula $s'_{ab}$
+\end_inset
+
+.
+ Depending on sign, add/subtract 
+\begin_inset Formula $\delta$
+\end_inset
+
+ from 
+\begin_inset Formula $G_{ab}$
+\end_inset
+
+'s and plot again, and observe the change in the power spectrum.
+ Does plasticity drive the spectrum to the sleep spectrum?
+\end_layout
+
+\begin_layout Enumerate
+Look at Neurofield @params 
+\end_layout
+
+\begin_layout Enumerate
+Change in 
+\begin_inset Formula $G_{ab}$
+\end_inset
+
+ leads to change in 
+\begin_inset Formula $XYZ$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+one step at a time
+\end_layout
+
+\begin_layout Standard
+1) 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset line
+LatexCommand rule
+offset "0.5ex"
+width "100col%"
+height "1pt"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align left
+[1] Robinson, P.A., 2012.
+ Interrelating anatomical, effective, and functional brain connectivity
+ using propagators and neural field theory.
+\end_layout
+
+\begin_layout Standard
+\align left
+[2] Fung, P.K., Haber, A.L., Robinson, P.A., 2013.
+ Neural field theory of plasticity in the cerebral cortex
+\end_layout
+
+\end_body
+\end_document

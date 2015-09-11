@@ -23,6 +23,7 @@ hold on
 
 plot(w,imag(Hw),'red')
 
+
 hold on
 
 plot(-w,-real(Hw))
@@ -35,8 +36,11 @@ ylabel('')
 
 hold on
 
+legend('Re(H)','Im(Hw)')
+xlabel('w (arbitrary units)')
+ylabel('H (arbitrary units)')
 subplot(1,2,2)
 
 plot(tau,Htau)
-xlabel('τ')
-ylabel('')
+xlabel('tau (arbitrary units)')
+ylabel('H (arbitrary units)')

@@ -1,7 +1,7 @@
 
 clear
 load('/suphys/sahanda/cortico plasticity/data/pdb_all.mat');
-n=10000; %number of points is 3000000/n
+n=1; %number of points is 3000000/n
 xyz_data=xyz_final(1:n:3000000,:);
 gab_data=gab_final(1:n:3000000,:);
 nus_data=nus_final(1:n:3000000,:);
@@ -21,8 +21,8 @@ w=2*pi*f;
 Hw=(H0+1i*w.*tp*H1)./(1+w*tp).^2;
 dw=w(2)-w(1);
 %G_ab's 5 states, 8 parameters
-G=zeros(30,8);
-nu=zeros(30,8);
+% G=zeros(30,8);
+% nu=zeros(30,8);
 
 
    
@@ -285,19 +285,19 @@ end
      %patch([1.2 1.2 0],[-0.2 1 1],[0.9 0.9 0.9],'EdgeAlpha',0.2)
      
       
-     tent.compute
-     hold on
-%      tent.surface
+%      tent.compute
 %      hold on
-     tent.draw_blobs({'ec','n1'},0.1)
-     hold on
+% %      tent.surface
+% %      hold on
+%      tent.draw_blobs({'ec','n1'},0.1)
+%      hold on
      
      
-     quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.5,'black')
-     grid off
-     xlabel('\bf{X}')
-     ylabel('\bf{Y}')
-     zlabel('\bf(Z)')
+%      quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.5,'black')
+%      grid off
+%      xlabel('\bf{X}')
+%      ylabel('\bf{Y}')
+%      zlabel('\bf(Z)')
      
      
      

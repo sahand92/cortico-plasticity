@@ -15,6 +15,7 @@ f = linspace(0,fmax,nw);
 w=2*pi*f;
 Hw=(H0+1i*w.*tp*H1)./(1+w*tp).^2;
 dw=w(2)-w(1);
+freq=w/(2*pi);
 %tau=linspace(-1,1,4500);
 wgab = [2.074,-4.110,0.772,7.768,-3.301,8.097,0.656,0.196];
 
@@ -46,8 +47,19 @@ for j=1:8
 end
 
 
+Kee=zeros(1,length(w));
+Kei=zeros(1,length(w));
+Kes=zeros(1,length(w));
+Kie=zeros(1,length(w));
+Kii=zeros(1,length(w));
+Kis=zeros(1,length(w));
+Kre=zeros(1,length(w));
+Krs=zeros(1,length(w));
+Kse=zeros(1,length(w));
+Ksr=zeros(1,length(w));
+Ksn=zeros(1,length(w));
 
-for c=5:5
+for c=1:5
 
 
 %paramters wake
@@ -163,6 +175,7 @@ for i=2:length(w)
     Isn(1)=dssn(1)*dw;
     Isn(i)=Isn(i-1)+dssn(i)*dw;
     
+    
 end
 Integrand=Iee(1,length(w));
 I=zeros(10,length(w));
@@ -177,106 +190,174 @@ I=zeros(10,length(w));
 % I(4,:)=Ise;
 % I(5,:)=Isr;
 %Isn
+     Kee(c,:)=Iee;
+     Kei(c,:)=Iei;
+     Kes(c,:)=Ies;
+     Kie(c,:)=Iie;
+     Kii(c,:)=Iii;
+     Kis(c,:)=Iis;
+     Kre(c,:)=Ire;
+     Krs(c,:)=Irs;
+     Kse(c,:)=Ise;
+     Ksr(c,:)=Isr;
+     Ksn(c,:)=Isn;
 
-k0=10;
-Lx=0.5;
-Ly=0.5;
-
-%frequency range and resolution
-%nw=1000;
-f = linspace(0,45,nw);
-w=2*pi*f;
-dw=w(2)-w(1);
-kmax=6;
-dk=2*pi/Lx;
-m_rows=-kmax:kmax;
-n_cols=-kmax:kmax;
-[kxa,kya]=meshgrid(dk*m_rows,dk*n_cols);
-k2=kxa.^2+kya.^2;
-k2u=unique(k2(:));
-k2u=[k2u histc(k2(:),k2u)];
-
-P=zeros(size(w));
-
-%for m=1:length(m_rows)
-%k=1  
-   % for n=1:length(n_cols)
-     %   k=k2(m,n);
-        
-   for j=1:size(k2u,1)
-       k=k2u(j,1);
-       
- 
-
-       
-         %k=sqrt((k_x)^2 + (k_y)^2);
-%L(w)
-L=((1-1i*w./alpha).*(1-1i*w./beta)).^-1;
-%q^2*r_ee^2
-q_re=(1-1i*w./gamma_ee).^2 - (1./(1-G_ei*L)).*(L.*G_ee + ((L.^2.*G_ese + L.^3 .*G_erse).*exp(1i*w.*t_0))./(1-L.^2.*G_srs));
-%Transfer function for e:
-T=(L.^2).*G_esn.*exp(1i*w.*t_0*0.5)./((1-(L.^2)*G_srs).*(1-G_ei*L).*(((k^2) .* (r_ee.^2))+(q_re)));
-%Power spectrum
-        P=P+k2u(j,2)*abs(T).^2 .* abs(phi_n).^2.*exp(-k/k0^2);
-        
-        
-        
-   end
-    
-P = P.*dk.^2; % Multiply by dk then sum to get the integral over k
-    P = P(:).'*2*pi; % Convert to P(f)
-
-alpha_freq = 1/(t_0 + 1/alpha + 1/beta);
-%plot(w,Iee,'red')
-%hold on 
-%plot(w,Iei,'blue')
-%hold on
-%plot(w,Ies,'green')
-subplot(1,2,1)
-freq=w/(2*pi);
-plot(freq,Iee,freq,Iei,freq,Ies,freq,Iie,freq,Iii,freq,Iis,freq,Ire,freq,Irs,'--',freq,Ise,'--',freq,Isr,'--',freq,Isn,':')
-legend('I_{ee}','I_{ei}','I_{es}','I_{ie}','I_{ii}','I_{is}','I_{re}','I_{rs}','I_{se}','I_{sr}','I_{sn}')
-% plot(freq,Iee);
-% hold on 
-% plot(w/(2*pi),Iei)
-% hold on
-% plot(w/(2*pi),Ies)
-% hold on
-% plot(w/(2*pi),Iie)
-% hold on
-% plot(w/(2*pi),Iii)
-% hold on
-% plot(w/(2*pi),Iis)
-% hold on
-% plot(w/(2*pi),Ire)
-% hold on
-% plot(w/(2*pi),Irs)
-% hold on
-% plot(w/(2*pi),Ise)
-% hold on
-% plot(w/(2*pi),Isr)
-% hold on
-  xlabel('f(Hz)')
-  ylabel('Integral')
- subplot(1,2,2)
-  loglog(f,P)
- xlabel('f(Hz)')
- ylabel('P(s^{-1})')
- hold on
- plot(alpha_freq*ones(10),linspace(10^-8,10^-2,10),'--','color','green')
- hold on
- plot(2*alpha_freq*ones(10),linspace(10^-8,10^-2,10),'--','color','green')
- hold on
- plot(3*alpha_freq*ones(10),linspace(10^-8,10^-2,10),'--','color','green')
- text(alpha_freq+1,10^-8*1.1,'f_\alpha')
- text(2*alpha_freq+1,10^-8*1.1,'2f_\alpha')
-  text(3*alpha_freq+1,10^-8*1.1,'3f_\alpha')
- set(gca,'XLim',[1 50],'YLim',[10^-8 10^-2]);
- hold on
 end
-
-%END****************************
-
+subplot(4,3,1)
+plot(freq,Kee)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{ee}')
+subplot(4,3,2)
+plot(freq,Kei)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{ei}')
+subplot(4,3,3)
+plot(freq,Kes)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{es}')
+subplot(4,3,4)
+plot(freq,Kie)
+legend('N1','N2','N3','N2s','Wake')
+xlabel('f(Hz)')
+ylabel('I_{ie}')
+subplot(4,3,5)
+plot(freq,Kii)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{ii}')
+subplot(4,3,6)
+plot(freq,Kis)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{is}')
+subplot(4,3,7)
+plot(freq,Kre)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{re}')
+subplot(4,3,8)
+plot(freq,Krs)
+   % legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{rs}')
+subplot(4,3,9)
+plot(freq,Kse)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{se}')
+subplot(4,3,10)
+plot(freq,Ksr)
+    %legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{sr}')
+subplot(4,3,11)
+plot(freq,Ksn)
+    legend('N1','N2','N3','N2s','Wake')
+    xlabel('f(Hz)')
+    ylabel('I_{sn}')
+% k0=10;
+% Lx=0.5;
+% Ly=0.5;
+% 
+% %frequency range and resolution
+% %nw=1000;
+% f = linspace(0,45,nw);
+% w=2*pi*f;
+% dw=w(2)-w(1);
+% kmax=6;
+% dk=2*pi/Lx;
+% m_rows=-kmax:kmax;
+% n_cols=-kmax:kmax;
+% [kxa,kya]=meshgrid(dk*m_rows,dk*n_cols);
+% k2=kxa.^2+kya.^2;
+% k2u=unique(k2(:));
+% k2u=[k2u histc(k2(:),k2u)];
+% 
+% P=zeros(size(w));
+% 
+% %for m=1:length(m_rows)
+% %k=1  
+%    % for n=1:length(n_cols)
+%      %   k=k2(m,n);
+%         
+%    for j=1:size(k2u,1)
+%        k=k2u(j,1);
+%        
+%  
+% 
+%        
+%          %k=sqrt((k_x)^2 + (k_y)^2);
+% %L(w)
+% L=((1-1i*w./alpha).*(1-1i*w./beta)).^-1;
+% %q^2*r_ee^2
+% q_re=(1-1i*w./gamma_ee).^2 - (1./(1-G_ei*L)).*(L.*G_ee + ((L.^2.*G_ese + L.^3 .*G_erse).*exp(1i*w.*t_0))./(1-L.^2.*G_srs));
+% %Transfer function for e:
+% T=(L.^2).*G_esn.*exp(1i*w.*t_0*0.5)./((1-(L.^2)*G_srs).*(1-G_ei*L).*(((k^2) .* (r_ee.^2))+(q_re)));
+% %Power spectrum
+%         P=P+k2u(j,2)*abs(T).^2 .* abs(phi_n).^2.*exp(-k/k0^2);
+%         
+%         
+%         
+%    end
+%     
+% P = P.*dk.^2; % Multiply by dk then sum to get the integral over k
+%     P = P(:).'*2*pi; % Convert to P(f)
+% 
+% alpha_freq = 1/(t_0 + 1/alpha + 1/beta);
+% %plot(w,Iee,'red')
+% %hold on 
+% %plot(w,Iei,'blue')
+% %hold on
+% %plot(w,Ies,'green')
+% subplot(1,2,1)
+% 
+% %plot(freq,Iee,freq,Iei,freq,Ies,freq,Iie,freq,Iii,freq,Iis,freq,Ire,freq,Irs,'--',freq,Ise,'--',freq,Isr,'--',freq,Isn,':')
+% 
+% %legend('I_{ee}','I_{ei}','I_{es}','I_{ie}','I_{ii}','I_{is}','I_{re}','I_{rs}','I_{se}','I_{sr}','I_{sn}')
+% % plot(freq,Iee);
+% % hold on 
+% % plot(w/(2*pi),Iei)
+% % hold on
+% % plot(w/(2*pi),Ies)
+% % hold on
+% % plot(w/(2*pi),Iie)
+% % hold on
+% % plot(w/(2*pi),Iii)
+% % hold on
+% % plot(w/(2*pi),Iis)
+% % hold on
+% % plot(w/(2*pi),Ire)
+% % hold on
+% % plot(w/(2*pi),Irs)
+% % hold on
+% % plot(w/(2*pi),Ise)
+% % hold on
+% % plot(w/(2*pi),Isr)
+% % hold on
+%   xlabel('f(Hz)')
+%   ylabel('Integral')
+%  subplot(1,2,2)
+%   loglog(f,P)
+%  xlabel('f(Hz)')
+%  ylabel('P(s^{-1})')
+%  hold on
+%  plot(alpha_freq*ones(10),linspace(10^-8,10^-2,10),'--','color','green')
+%  hold on
+%  plot(2*alpha_freq*ones(10),linspace(10^-8,10^-2,10),'--','color','green')
+%  hold on
+%  plot(3*alpha_freq*ones(10),linspace(10^-8,10^-2,10),'--','color','green')
+%  text(alpha_freq+1,10^-8*1.1,'f_\alpha')
+%  text(2*alpha_freq+1,10^-8*1.1,'2f_\alpha')
+%   text(3*alpha_freq+1,10^-8*1.1,'3f_\alpha')
+%  set(gca,'XLim',[1 50],'YLim',[10^-8 10^-2]);
+%  hold on
+% end
+% 
+% %END****************************
+% 
 
 
 

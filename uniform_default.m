@@ -1,36 +1,46 @@
-
 clear
-%load('/suphys/sahanda/cortico plasticity/indexdata.mat');
-load('/suphys/sahanda/cortico plasticity/indexdatabig.mat');
-%S=load('/suphys/sahanda/phd/corticothalamic-model/example_parameters.mat');
-%S=load('/suphys/sahanda/phd/romesh-large-files/pdb_sleep.mat');
-n=1; %number of points is 3000000/n
-xyz_data=S.xyz;
-gab_data=S.gab;
-nus_data=S.nus;
 
-% S=load('/suphys/sahanda/cortico plasticity/data/pdb_all.mat');
-%  xyz_data=S.xyz_final(1:1000:3000000,:);
-%  gab_data=S.gab_final(1:1000:3000000,:);
-%  nus_data=S.nus_final(1:1000:3000000,:);
- %gab_data=[S.eo.gab;S.ec.gab;S.n1.gab;S.n2.gab;S.n3.gab];
- %nus_data=[S.eo.nus;S.eo.nus;S.n1.nus;S.n2.nus;S.n3.gab];
+%  S=load('/import/ghrian1/sahanda/uniform_wake');
+%  X=S.X;
+%  Y=S.Y;
+%  Z=S.Z;
+%  G=S.G;
+%  nu=S.nu;
+load('/suphys/sahanda/cortico plasticity/index7k.mat');
+%load('/suphys/sahanda/cortico plasticity/ind700k.mat');
+load('/suphys/sahanda/cortico plasticity/data/pdb_wake.mat');
+X=xyz_final(index,1);
+Y=xyz_final(index,2);
+Z=xyz_final(index,3);
+G=gab_final(index,:);
+nu=nus_final(index,:);
 
-%plasticity window
+
+% load('/suphys/sahanda/phd/corticothalamic-model/example_parameters.mat');
+% gab_data=[ec.gab;n3.gab;eo.gab];
+% nus_data=[ec.nus;n3.nus;eo.gab];
+% G=gab_data;
+% nu=nus_data;
+% G_ese=G(:,3).*G(:,4);
+% G_erse=G(:,3).*G(:,5).*G(:,7);
+% G_srs=G(:,5).*G(:,8);
+% G_esn=G(:,3).*G(:,6);
+% X=G(:,1)./(1-G(:,2));
+% Y=(G_ese+G_erse)./((1-G_srs).*(1-G(:,2)));
+% alpha=83.3;
+% beta=770;
+% Z=-G_srs.*(alpha*beta)/(alpha+beta)^2;
+
+
+A_minusrs=-0.4;
+
 tp=0.01; %plasticity timescale
 
-
-for c=1:length(gab_data(:,1))
-
-for A_minus=-1
-
 A_plus=1;
-%A_minus=1; %CDP
-%A_minus=-1;%STDP
-%A_minus=-0.4;
+A_minus=1; %CDP
+%A_minus=-0.8;%STDP
 
-
-H0=-(A_plus + A_minus)*tp; 
+H0=(A_plus + A_minus)*tp; 
 H1=(A_plus - A_minus)*tp;
 
  fmax=45;
@@ -38,6 +48,51 @@ H1=(A_plus - A_minus)*tp;
  f = linspace(0,fmax,nw);
  w=2*pi*f;
  Hw=(H0+1i*w.*tp*H1)./(1+(w*tp).^2);
+ 
+ 
+ 
+ %Window function for RS-SR population------------------------
+ 
+ A_plusrs=1;
+%A_minus=1; %CDP
+%A_minusrs=0.5;%STDP
+
+H0rs=-(A_plusrs + A_minusrs)*tp; 
+H1rs=(A_plusrs - A_minusrs)*tp;
+
+ Hwrs=(H0rs+1i*w.*tp*H1rs)./(1+(w*tp).^2);
+ 
+% Window for EI
+A_plusei=0.8;
+A_minusei=-1;
+ H0ei=(A_plusei + A_minusei)*tp; 
+H1ei=(A_plusei - A_minusei)*tp;
+
+ Hwei=(H0ei+1i*w.*tp*H1ei)./(1+(w*tp).^2);
+ 
+% Window for EE
+A_plusee=1;
+A_minusee=-0.8;
+ H0ee=(A_plusee + A_minusee)*tp; 
+H1ee=(A_plusee - A_minusee)*tp;
+
+ Hwee=(H0ee+1i*w.*tp*H1ee)./(1+(w*tp).^2); 
+ 
+ % Window for ES
+A_pluses=1;
+A_minuses=-0.8;
+ H0es=-(A_pluses + A_minuses)*tp; 
+H1es=(A_pluses - A_minuses)*tp;
+
+ Hwes=(H0es+1i*w.*tp*H1es)./(1+(w*tp).^2); 
+
+  % Window for RE
+A_plusre=1;
+A_minusre=-0.8;
+ H0re=(A_plusre+ A_minusre)*tp; 
+H1re=(A_plusre - A_minusre)*tp;
+
+ Hwre=(H0re+1i*w.*tp*H1re)./(1+(w*tp).^2); 
 
 %triphasic H(w) ------------------------------------------------
 
@@ -65,20 +120,20 @@ dw=w(2)-w(1);
 
 
    
-
-     G=gab_data;  
-     nu=nus_data;
-   
+% 
+%      G=S.gab_final(index,:);  
+%      nu=S.nus_final(index,:);
+%    
 
 
  %XYZs
  
- Gfinal=zeros(length(gab_data(:,1)),11);
-Ilast=zeros(length(gab_data(:,1)),11);
-nufinal=zeros(length(gab_data(:,1)),11);   
-N=zeros(length(gab_data(:,1)),11);
+ Gfinal=zeros(length(G(:,1)),11);
+Ilast=zeros(length(G(:,1)),11);
+nufinal=zeros(length(G(:,1)),11);   
+N=zeros(length(G(:,1)),11);
 
-
+for c=1:length(G(:,1))
 
 
 %paramters wake
@@ -137,9 +192,13 @@ G_esn=G_es*G_sn;
 
 
 
-
-alpha=83.3;
+%wake
+alpha=83.3; 
 beta=770;
+
+%sleep
+% alpha=45;
+% beta=185;
 gamma_ee=116;
 L=((1-1i*w./alpha).*(1-1i*w./beta)).^-1;
 
@@ -148,9 +207,9 @@ tau_re=t_0/2;
 tau_se=t_0/2;
 tau_es=t_0/2;
 %XYZs
-X(c)=G_ee/(1-G_ei);
-Y(c)=(G_ese+G_erse)/((1-G_srs)*(1-G_ei));
-Z(c)=-G_srs*(alpha*beta)/(alpha+beta)^2;
+% X(c)=G_ee/(1-G_ei);
+% Y(c)=(G_ese+G_erse)/((1-G_srs)*(1-G_ei));
+% Z(c)=-G_srs*(alpha*beta)/(alpha+beta)^2;
 
 
 r_ee=0.086;
@@ -212,13 +271,13 @@ for i=2:length(w)
     Ies(1)=dses(1)*dw;
     Ies(i)=Ies(i-1)+dses(i)*dw;
     %s_ie
-    dsie(1)=(1/2*pi)*conj(Hw(1))*Qi(1)*conj(Qe(1));
-    dsie(i)=(1/2*pi)*conj(Hw(i))*Qi(i)*conj(Qe(i));
+    dsie(1)=0; %(1/2*pi)*conj(Hw(1))*Qi(1)*conj(Qe(1));
+    dsie(i)=0; %(1/2*pi)*conj(Hw(i))*Qi(i)*conj(Qe(i));
     Iie(1)=dsie(1)*dw;
     Iie(i)=Iie(i-1)+dsie(i)*dw;
     %s_ii
-    dsii(1)=(1/2*pi)*conj(Hw(1))*Qi(1)*conj(Qi(1));
-    dsii(i)=(1/2*pi)*conj(Hw(i))*Qi(i)*conj(Qi(i));
+    dsii(1)=0; %(1/2*pi)*conj(Hw(1))*Qi(1)*conj(Qi(1));
+    dsii(i)=0; %(1/2*pi)*conj(Hw(i))*Qi(i)*conj(Qi(i));
     Iii(1)=dsii(1)*dw;
     Iii(i)=Iii(i-1)+dsii(i)*dw;
     %s_is
@@ -278,6 +337,7 @@ dG_se=dGdt(c,9);
 dG_re=dGdt(c,7);
 dG_sr=dGdt(c,10);
 dG_rs=dGdt(c,8);
+dG_sn=dGdt(c,11);
 dG_ese=dG_es*G_se + G_es*dG_se;
 dG_erse=G_es*G_sr*dG_re + G_re*(G_es*dG_sr + dG_es*G_sr);
 dG_srs=dG_sr*G_rs + dG_rs*G_sr;
@@ -289,179 +349,95 @@ dXdt(c)=((1-G_ei)*dG_ee + G_ee*dG_ei)/(1-G_ei)^2;
 dYdt(c)=((1-G_srs)*(1-G_ei)*(dG_ese+dG_erse)-(G_ese+G_erse)*(-dG_srs-dG_ei+dG_srs*G_ei+G_srs*dG_ei))/((1-G_srs)*(1-G_ei))^2;
 dZdt(c)=-(dGdt(c,10)*G_rs+G_sr*dGdt(c,8))*(alpha*beta)/(alpha+beta)^2;
 
-dGeedt(c,1)=dG_ee;
-dGeidt(c,1)=dG_ei;
-dGrsdt(c,1)=dG_rs;
 
+%8 parameters
 
+dGeedt(c,1)=real(dG_ee);
+dGeidt(c,1)=real(dG_ei);
+dGesdt(c,1)=real(dG_es);
+dGsedt(c,1)=real(dG_se);
+dGsrdt(c,1)=real(dG_sr);
+dGsndt(c,1)=real(dG_sn);
+dGredt(c,1)=real(dG_re);
+dGrsdt(c,1)=real(dG_rs);
 
-% scatter(real(dG_ee),A_minus,'.','blue')
-% hold on
-% %scatter(real(dG_rs),A_minus,'.','red')
-% %hold on
-% scatter(real(dG_re),A_minus,'.','black')
-% hold on
-% scatter(real(dG_se),A_minus,'.','green')
-% hold on
-
-
-radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
-     dUdt=(real(dXdt))./real(radius);
-     dVdt=(real(dYdt))./real(radius);
-     dXdts=smoothn(real(dUdt),1);
-     dYdts=smoothn(real(dVdt),1);
-     
-     quiver(X,Y,dUdt,dVdt,0.3)
-      hold on
-      
-
+%reduced parameters
+dGesedt(c,1)=real(dG_es).*real(dG_se);
+dGsrsdt(c,1)=real(dG_sr).*real(dG_rs);
+dGesre(c,1)=real(dG_es).*real(dG_sr).*real(dG_re);
+dGdtr(c,:)=[dGdt(c,1) dGdt(c,2) dGdt(c,3) dGdt(c,9) dGdt(c,10) dGdt(c,11) dGdt(c,7) dGdt(c,8)];
+Ilastr(c,:)=[Ilast(c,1) Ilast(c,2) Ilast(c,3) Ilast(c,9) Ilast(c,10) Ilast(c,11) Ilast(c,7) Ilast(c,8)];
+Nr(c,:)=[N(c,1) N(c,2) N(c,3) N(c,9) N(c,10) N(c,11) N(c,7) N(c,8)];
 end
 
-
-
-end
-
-%quiver3(X,Y,Z,dXdt,dYdt,dZdt,100)
- 
-% 
-% % % % 3D
-%  tent.compute
-%  hold on
-%      radius=sqrt(real(dXdt).^2 + real(dYdt).^2+real(dZdt).^2);
-%     dUdt=(real(dXdt))./real(radius);
-%     dVdt=(real(dYdt))./real(radius);
-%      dWdt=(real(dZdt))./real(radius);
-% %     quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.25)
-% %     %quiver3(real(X),real(Y),real(Z),dXdt,dYdt,dZdt,10)
-% %     % hold on
-% %     % x=linspace(0,1,10);
-% %     % y=1-x;
-% %     hold on 
-% %     tent.compute
-% %     % plot(y,x,'--','color','black')
-% %     hold on
-% %     %scatter3(X,Y,Z)
-% %     xlabel('X')
-% %     ylabel('Y')
-% %     zlabel('Z')
-% %     axis square
- % XY plot
- 
- 
- 
- 
- 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
  
-%  
-% %   dXdts=smoothn(real(dXdt));
-% %   dYdts=smoothn(real(dYdt));
-%      radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
-%      dUdt=(real(dXdt))./real(radius);
-%      dVdt=(real(dYdt))./real(radius);
-%      dXdts=smoothn(real(dUdt),1);
-%      dYdts=smoothn(real(dVdt),1);
-%       quiver(X,Y,dUdt,dVdt,0.3)
-%      %quiver(X,Y,dXdts,dYdts,'black')
-%      xlabel('X')
-%      ylabel('Y')
-% %        hold on 
-% %      tent.compute
-%      hold on
-%        tent.draw_blobs({'ec','n1'},0.1)
-%        hold on
-% %      
-% %      hold on
-%       %quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.3,'black')
-%       grid off
-%       xlabel('\bf{X}')
-%       ylabel('\bf{Y}')
-%       hold on
-%        patch([1.2 1.2 0],[-0.2 1 1],[0.9 0.9 0.9],'EdgeAlpha',0.2)
-% %      legend
-% %   
-%       %hold on
-%       % tent.surface
-%      view(0,90)
-% %      
-     
-     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
-     
-     
-     
-     
-     
-     
-     
  
-% YZ plot
-%    radius=sqrt(real(dXdt).^2+real(dZdt).^2 + real(dYdt).^2);
-%     dUdt=(real(dXdt))./real(radius);
-%      dVdt=(real(dYdt))./real(radius);
-%      dWdt=(real(dZdt))./real(radius);
-%      xlabel('Y')
-%      ylabel('Z')
-      
-    
-    % patch([1.2 1.2 0],[-0.2 1 1],[0.9 0.9 0.9],'EdgeAlpha',0.2)
+%   dXdts=smoothn(real(dXdt));
+%   dYdts=smoothn(real(dYdt));
+     radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
+     dUdt=(real(dXdt))./real(radius);
+     dVdt=(real(dYdt))./real(radius);
+      dXdts=smoothn(real(dUdt),1);
+      dYdts=smoothn(real(dVdt),1);
+%       %quiver(X(index),Y(index),transpose(dUdt),transpose(dVdt),0.3,'blue')
+      rad=sqrt(real(dXdts).^2 + real(dYdts).^2);
+      dXdt_sm=dXdts./rad;
+      dYdt_sm=dYdts./rad;
+     %quiver(X,Y,transpose(dXdt_sm),transpose(dYdt_sm),0.3,'red')
+     quiver(X,Y,transpose(dUdt),transpose(dVdt),0.3,'red')
      
-      
+     
+     for i=1:10
+         for j=1:20
+         lw=find(X>i/10 & X<0.15+i/10 & Y>-1+j/10 & Y<-1+0.15+j/10);
+        % quiver(X(lw),Y(lw),transpose(dUdt(lw)),transpose(dVdt(lw)),0.5,'red')
+         hold on
+         quiver(mean(X(lw)),mean(Y(lw)),mean(dUdt(lw)),mean(dVdt(lw)),0.1,'LineWidth',2,'MaxHeadSize',2,'color','black')
+         end
+         hold on
+     end
+     
+     
+     
+%        hold on 
 %      tent.compute
+        hold on
+       tent.draw_blobs({'ec','n1','n3'},0.1)
+       hold on
+%      
 %      hold on
-% %      tent.surface
-% %      hold on
-%      tent.draw_blobs({'ec','n1'},0.1)
-%      hold on
-     
-     
-%      quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.5,'black')
-%      grid off
-%      xlabel('\bf{X}')
-%      ylabel('\bf{Y}')
-%      zlabel('\bf(Z)')
-     
-     
-     
-    
-
-% plot(f,Qe)
-% hold on
-% plot(f,Qi,'red')
-% hold on
-% plot(f,Qr,'green')
-% hold on
-% plot(f,Qs,'black')
-% hold on
-% plot(f,Qn,'--')
-% freq=w/(2*pi);
-% subplot(1,2,1)
-% plot(freq,dsee,freq,dsei,freq,dses,freq,dsie,freq,dsii,freq,dsis,freq,dsre,freq,dsrs,'--',freq,dsse,'--',freq,dssr,'--',freq,dssn,':')
-% xlabel('f(Hz)')
-% ylabel('Integrand')
-% legend('ds_{ee}/dt','ds_{ei}/dt','ds_{es}/dt','ds_{ie}/dt','ds_{ii}/dt','ds_{is}/dt','ds_{re}/dt','ds_{rs}/dt','ds_{se}/dt','ds_{sr}/dt','ds_{sn}/dt')
-% 
-% subplot(1,2,2)
-% plot(freq,Iee,freq,Iei,freq,Ies,freq,Iie,freq,Iii,freq,Iis,freq,Ire,freq,Irs,'--',freq,Ise,'--',freq,Isr,'--',freq,Isn,':')
-% legend('I_{ee}','I_{ei}','I_{es}','I_{ie}','I_{ii}','I_{is}','I_{re}','I_{rs}','I_{se}','I_{sr}','I_{sn}')
-% xlabel('f_{max}(Hz)')
-% ylabel('Integral')
+      %quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.3,'black')
+      grid off
+      xlabel('\bf{X}')
+      ylabel('\bf{Y}')
+      hold on
+       %patch([1.2 1.2 0],[-0.2 1 1],[0.9 0.9 0.9],'EdgeAlpha',0.2)
+%      legend
+%   
+      %hold on
+       tent.surface
+     view(2)
+     xlabel('X','FontSize',30)
+     ylabel('Y','FontSize',30)
 
 
-%quiver(nufinal(:,1),nufinal(:,2),real(Ilast(:,1))./sqrt(real(Ilast(:,1)).^2+real(Ilast(:,2).^2)),real(Ilast(:,2))./sqrt(real(Ilast(:,1)).^2+real(Ilast(:,2)).^2),0.25)
 
+gains(1,1)={[]};
+gains(1,2:9)={'Gee','Gei','Ges','Gse','Gsr','Gsn','Gre','Grs'};
+gains(2,1)={'dG/dt (wake)'};
+gains(3,1)={'dG/dt (sleep)'};
 
-% sigma=0.006;
-% theta=0.0204;
-% Qmax=340;
-% 
-% rho_a=Q/sigma .*(1-Q/Qmax);
+gains(2,2:9)={sign(mean(dGeedt(lw))),sign(mean(dGeidt(lw))),sign(mean(dGesdt(lw))),sign(mean(dGsedt(lw))),sign(mean(dGsrdt(lw))),sign(mean(dGsndt(lw))),sign(mean(dGredt(lw))),sign(mean(dGrsdt(lw)))};
+gains(3,2:9)={sign(mean(dGeedt(ls))),sign(mean(dGeidt(ls))),sign(mean(dGesdt(ls))),sign(mean(dGsedt(ls))),sign(mean(dGsrdt(ls))),sign(mean(dGsndt(ls))),sign(mean(dGredt(ls))),sign(mean(dGrsdt(ls)))};
+gains
  
-% %vab=G(1,:)./rho_a;
-% Q_0=linspace(0,340,1000);
-% %Q_x=-sigma*log((Qmax./Q_0) -1)+theta-Q_0;
-% %plot(Q_x,Q_0)
-% plot(Q_0,-sigma*log((Qmax./Q_0)-1)+theta-Q_0)
-%XYZ space
+gainsr(1,1)={[]};
+gainsr(1,2:6)={'Gee','Gei','Gese','Gsrs','Gesre'};
+gainsr(2,1)={'dG/dt (wake)'};
+gainsr(3,1)={'dG/dt (sleep)'};
 
+gainsr(2,2:6)={sign(mean(dGeedt(lw))),sign(mean(dGeidt(lw))),sign(mean(dGesedt(lw))),sign(mean(dGsrsdt(lw))),sign(mean(dGesre(lw)))};
+gainsr(3,2:6)={sign(mean(dGeedt(ls))),sign(mean(dGeidt(ls))),sign(mean(dGesedt(ls))),sign(mean(dGsrsdt(ls))),sign(mean(dGesre(ls)))};
+gainsr

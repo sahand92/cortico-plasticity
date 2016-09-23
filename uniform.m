@@ -1,27 +1,20 @@
 clear
-load('/suphys/sahanda/cortico plasticity/points.mat');  %data of 3000 points containing positions, velocities, Gabs and Nus
-X=S.xyz(:,1);
-Y=S.xyz(:,2);
-Z=S.xyz(:,3);
-U=transpose(S.u);
-V=transpose(S.v);
-W=transpose(S.w);
-%scatter(X,Y,'.')
-% newX=X(X<0.2&X>0);
-% newY=Y(Y>0.4&Y<0.8);
-% M=[X Y];
-% 
-% newX=X(M(:,1)<0.2 & M(:,2)>0.4)
-% newY=Y(M(:,2)>0.4 & M(:,1)<0.2) 
-% 
-% 
-% 
-% %blocks (squares) are M
-% M=zeros(size(M))
-% M=[newX newY];
-n=0.05;  %square size is n x n
-%index=zeros(1,27);
 
+%  S=load('/import/ghrian1/sahanda/uniform_wake');
+%  X=S.X;
+%  Y=S.Y;
+%  Z=S.Z;
+%  G=S.G;
+%  nu=S.nu;
+
+load('/suphys/sahanda/cortico plasticity/data/pdb_wake.mat');
+X=xyz_final(1:30000,1);
+Y=xyz_final(1:30000,2);
+Z=xyz_final(1:30000,3);
+G=gab_final(1:30000,:);
+nu=nus_final(1:30000,:);
+
+n=0.01;  
 
 
 for i=0:ceil(0.9/n)
@@ -32,29 +25,28 @@ l=find(X>0+n*i&X<0+n*(i+1) & Y>-1+n*j&Y<-1+n*(j+1),1);
 
     
 
-%  radius=sqrt(real(U).^2+real(V).^2);
-%     dUdt=(real(U))./real(radius);
-%      dVdt=(real(V))./real(radius);    
-%      
-% 
-%   
-
-% 
-% M2=[X(l) Y(l)];
-scatter(X(l),Y(l),'.')
-% quiver(X(l),Y(l),dUdt(l),dVdt(l),0.05)
- hold on
- if isempty(l)==1;
-     l=nan;  
+if isempty(l)==1;
+     l=0;  
  end 
- disp(l)
+ %disp(l)
  
- 
- 
-    end
-    
-%hold on
+%  if l~=[];
+%      x=l;
+%  else
+%      x=0;
+%  end
+index(i+1,j+1)=l;
+
+% M2=[X(l) Y(l)];
+% scatter(X(l),Y(l),'.')
+% hold on
+  end  
 
 end
-
+a=numel(index);
+index=reshape(index,1,a);
+index=index(index~=0);
+clear i
+clear j
+scatter(X(index),Y(index),'.','black')
 

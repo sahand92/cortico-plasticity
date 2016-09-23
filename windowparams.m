@@ -1,20 +1,19 @@
-
 clear
 %load('/suphys/sahanda/cortico plasticity/indexdata.mat');
-load('/suphys/sahanda/cortico plasticity/indexdatabig.mat');
-%S=load('/suphys/sahanda/phd/corticothalamic-model/example_parameters.mat');
+%load('/suphys/sahanda/cortico plasticity/indexdatabig.mat');
+S=load('/suphys/sahanda/phd/corticothalamic-model/example_parameters.mat');
 %S=load('/suphys/sahanda/phd/romesh-large-files/pdb_sleep.mat');
 n=1; %number of points is 3000000/n
-xyz_data=S.xyz;
-gab_data=S.gab;
-nus_data=S.nus;
+% xyz_data=S.xyz;
+% gab_data=S.gab;
+% nus_data=S.nus;
 
 % S=load('/suphys/sahanda/cortico plasticity/data/pdb_all.mat');
-%  xyz_data=S.xyz_final(1:1000:3000000,:);
-%  gab_data=S.gab_final(1:1000:3000000,:);
-%  nus_data=S.nus_final(1:1000:3000000,:);
- %gab_data=[S.eo.gab;S.ec.gab;S.n1.gab;S.n2.gab;S.n3.gab];
- %nus_data=[S.eo.nus;S.eo.nus;S.n1.nus;S.n2.nus;S.n3.gab];
+% xyz_data=S.xyz_final(1:1000:3000000,:);
+% gab_data=S.gab_final(1:1000:3000000,:);
+% nus_data=S.nus_final(1:1000:3000000,:);
+ gab_data=[S.eo.gab;S.ec.gab;S.n1.gab;S.n2.gab;S.n3.gab];
+ nus_data=[S.eo.nus;S.ec.nus;S.n1.nus;S.n2.nus;S.n3.gab];
 
 %plasticity window
 tp=0.01; %plasticity timescale
@@ -22,15 +21,16 @@ tp=0.01; %plasticity timescale
 
 for c=1:length(gab_data(:,1))
 
-for A_minus=-1
+for A_minusrs=-0.6:0.1:1
+
 
 A_plus=1;
 %A_minus=1; %CDP
 %A_minus=-1;%STDP
-%A_minus=-0.4;
+A_minus=-0.8;
 
 
-H0=-(A_plus + A_minus)*tp; 
+H0=(A_plus + A_minus)*tp; 
 H1=(A_plus - A_minus)*tp;
 
  fmax=45;
@@ -38,6 +38,17 @@ H1=(A_plus - A_minus)*tp;
  f = linspace(0,fmax,nw);
  w=2*pi*f;
  Hw=(H0+1i*w.*tp*H1)./(1+(w*tp).^2);
+ 
+ %Window function for RS-SR population------------------------
+ 
+ A_plusrs=1;
+%A_minus=1; %CDP
+%A_minusrs=-0.2;%STDP
+
+H0rs=-(A_plusrs + A_minusrs)*tp; 
+H1rs=(A_plusrs - A_minusrs)*tp;
+
+ Hwrs=(H0rs+1i*w.*tp*H1rs)./(1+(w*tp).^2);
 
 %triphasic H(w) ------------------------------------------------
 
@@ -232,8 +243,8 @@ for i=2:length(w)
     Ire(1)=dsre(1)*dw;
     Ire(i)=Ire(i-1)+dsre(i)*dw;
     %s_rs
-    dsrs(1)=(1/2*pi)*conj(Hw(1))*Qr(1)*conj(Qs(1));
-    dsrs(i)=(1/2*pi)*conj(Hw(i))*Qr(i)*conj(Qs(i));
+    dsrs(1)=(1/2*pi)*conj(Hwrs(1))*Qr(1)*conj(Qs(1));
+    dsrs(i)=(1/2*pi)*conj(Hwrs(i))*Qr(i)*conj(Qs(i));
     Irs(1)=dsrs(1)*dw;
     Irs(i)=Irs(i-1)+dsrs(i)*dw;
     %s_se
@@ -242,8 +253,8 @@ for i=2:length(w)
     Ise(1)=dsse(1)*dw;
     Ise(i)=Ise(i-1)+dsse(i)*dw;
     %s_sr
-    dssr(1)=(1/2*pi)*conj(Hw(1))*Qs(1)*conj(Qr(1));
-    dssr(i)=(1/2*pi)*conj(Hw(i))*Qs(i)*conj(Qr(i));
+    dssr(1)=(1/2*pi)*conj(Hwrs(1))*Qs(1)*conj(Qr(1));
+    dssr(i)=(1/2*pi)*conj(Hwrs(i))*Qs(i)*conj(Qr(i));
     Isr(1)=dssr(1)*dw;
     Isr(i)=Isr(i-1)+dssr(i)*dw;
     %s_sn
@@ -263,7 +274,7 @@ rhos=Gfinal./nufinal;
 Ilast(c,1:11)=[Iee(last),Iei(last),Ies(last),Iie(last),Iii(last),Iis(last),Ire(last),Irs(last),Ise(last),Isr(last),Isn(last)];
 %number of synapses
 N(c,1:11)=[10^4,1600,800,10^4,1600,700,2700,700,1100,550,450];
-dGdt=N.*rhos.*Ilast; % nx11 matrix of dG/dts
+dGdt=Ilast.*N.*rhos; % nx11 matrix of dG/dts
 
 
 dG_ee=dGdt(c,1);
@@ -304,16 +315,19 @@ dGrsdt(c,1)=dG_rs;
 % scatter(real(dG_se),A_minus,'.','green')
 % hold on
 
-
-radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
+% 
+     radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
      dUdt=(real(dXdt))./real(radius);
      dVdt=(real(dYdt))./real(radius);
-     dXdts=smoothn(real(dUdt),1);
-     dYdts=smoothn(real(dVdt),1);
+%      dXdts=smoothn(real(dUdt),1);
+%      dYdts=smoothn(real(dVdt),1);
      
-     quiver(X,Y,dUdt,dVdt,0.3)
+     quiver(X,Y,real(dUdt),real(dVdt),0.3)
       hold on
       
+      
+%       plot(w,Hw,w,imag(Hw))
+%       hold on
 
 end
 
@@ -354,7 +368,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
  
-%  
+ 
 % %   dXdts=smoothn(real(dXdt));
 % %   dYdts=smoothn(real(dYdt));
 %      radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
@@ -362,7 +376,7 @@ end
 %      dVdt=(real(dYdt))./real(radius);
 %      dXdts=smoothn(real(dUdt),1);
 %      dYdts=smoothn(real(dVdt),1);
-%       quiver(X,Y,dUdt,dVdt,0.3)
+%       quiver(X,Y,dXdts,dYdts,0.3)
 %      %quiver(X,Y,dXdts,dYdts,'black')
 %      xlabel('X')
 %      ylabel('Y')
@@ -464,4 +478,3 @@ end
 % %plot(Q_x,Q_0)
 % plot(Q_0,-sigma*log((Qmax./Q_0)-1)+theta-Q_0)
 %XYZ space
-

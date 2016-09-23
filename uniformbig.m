@@ -1,8 +1,9 @@
 clear
-load('/suphys/sahanda/cortico plasticity/data/pdb_all.mat');
+load('/suphys/sahanda/cortico plasticity/data/pdb_wake.mat');
 X=xyz_final(:,1);
 Y=xyz_final(:,2);
 Z=xyz_final(:,3);
+phie=phi_final(:,1);
 % U=transpose(S.u);
 % V=transpose(S.v);
 % W=transpose(S.w);
@@ -19,15 +20,17 @@ Z=xyz_final(:,3);
 % %blocks (squares) are M
 % M=zeros(size(M))
 % M=[newX newY];
-n=0.03;  %square size is n x n
+n=0.001;  %square size is n x n
 for i=0:ceil(0.9/n)
     for j=0:ceil(1.8/n)
    
 l=find(X>0+n*i&X<0+n*(i+1) & Y>-1+n*j&Y<-1+n*(j+1),1);
 if isempty(l)==1;
-     l=nan;  
+     l=0;  
  end 
- disp(l)
+ %disp(l)
+ 
+ index(i+1,j+1)=l;
 
 % M2=[X(l) Y(l)];
 % scatter(X(l),Y(l),'.')
@@ -35,3 +38,8 @@ if isempty(l)==1;
   end  
 
 end
+a=numel(index);
+index=reshape(index,1,a);
+index=index(index~=0);
+clear i
+clear j

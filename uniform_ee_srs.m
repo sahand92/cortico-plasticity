@@ -1,36 +1,70 @@
-
 clear
-%load('/suphys/sahanda/cortico plasticity/indexdata.mat');
-load('/suphys/sahanda/cortico plasticity/indexdatabig.mat');
-%S=load('/suphys/sahanda/phd/corticothalamic-model/example_parameters.mat');
-%S=load('/suphys/sahanda/phd/romesh-large-files/pdb_sleep.mat');
-n=1; %number of points is 3000000/n
-xyz_data=S.xyz;
-gab_data=S.gab;
-nus_data=S.nus;
+S=load('/suphys/sahanda/cortico plasticity/data/pdb_wake.mat');
+Gee=S.gab_final(:,1);
+Gei=S.gab_final(:,2);
+Ges=S.gab_final(:,3);
+Gse=S.gab_final(:,4);
+Gsr=S.gab_final(:,5);
+Gsn=S.gab_final(:,6);
+Gre=S.gab_final(:,7);
+Grs=S.gab_final(:,8);
+Gsrs=Gsr.*Grs;
 
-% S=load('/suphys/sahanda/cortico plasticity/data/pdb_all.mat');
-%  xyz_data=S.xyz_final(1:1000:3000000,:);
-%  gab_data=S.gab_final(1:1000:3000000,:);
-%  nus_data=S.nus_final(1:1000:3000000,:);
- %gab_data=[S.eo.gab;S.ec.gab;S.n1.gab;S.n2.gab;S.n3.gab];
- %nus_data=[S.eo.nus;S.eo.nus;S.n1.nus;S.n2.nus;S.n3.gab];
 
-%plasticity window
+% U=transpose(S.u);
+% V=transpose(S.v);
+% W=transpose(S.w);
+%scatter(X,Y,'.')
+% newX=X(X<0.2&X>0);
+% newY=Y(Y>0.4&Y<0.8);
+% M=[X Y];
+% 
+% newX=X(M(:,1)<0.2 & M(:,2)>0.4)
+% newY=Y(M(:,2)>0.4 & M(:,1)<0.2) 
+% 
+% 
+% 
+% %blocks (squares) are M
+% M=zeros(size(M))
+% M=[newX newY];
+n=0.5;  %square size is n x n
+%index=zeros(400,2);
+
+for i=0:ceil(20/n)
+    for j=0:ceil(7/n)
+   
+l=find(Gee>0+n*i&Gee<0+n*(i+1) & Gsrs>0-n*j&Gsrs<0-n*(j-1),1);
+if isempty(l)==1;
+     l=0;  
+ end 
+ %disp(l)
+ 
+%  if l~=[];
+%      x=l;
+%  else
+%      x=0;
+%  end
+index(i+1,j+1)=l;
+
+% M2=[X(l) Y(l)];
+% scatter(X(l),Y(l),'.')
+% hold on
+  end  
+
+end
+a=numel(index);
+index=reshape(index,1,a);
+index=index(index~=0);
+clear i
+clear j
+
 tp=0.01; %plasticity timescale
-
-
-for c=1:length(gab_data(:,1))
-
-for A_minus=-1
 
 A_plus=1;
 %A_minus=1; %CDP
-%A_minus=-1;%STDP
-%A_minus=-0.4;
+A_minus=-0.4;%STDP
 
-
-H0=-(A_plus + A_minus)*tp; 
+H0=(A_plus + A_minus)*tp; 
 H1=(A_plus - A_minus)*tp;
 
  fmax=45;
@@ -66,19 +100,19 @@ dw=w(2)-w(1);
 
    
 
-     G=gab_data;  
-     nu=nus_data;
+     G=S.gab_final(index,:);  
+     nu=S.nus_final(index,:);
    
 
 
  %XYZs
  
- Gfinal=zeros(length(gab_data(:,1)),11);
-Ilast=zeros(length(gab_data(:,1)),11);
-nufinal=zeros(length(gab_data(:,1)),11);   
-N=zeros(length(gab_data(:,1)),11);
+ Gfinal=zeros(length(G(:,1)),11);
+Ilast=zeros(length(G(:,1)),11);
+nufinal=zeros(length(G(:,1)),11);   
+N=zeros(length(G(:,1)),11);
 
-
+for c=1:length(G(:,1))
 
 
 %paramters wake
@@ -289,179 +323,20 @@ dXdt(c)=((1-G_ei)*dG_ee + G_ee*dG_ei)/(1-G_ei)^2;
 dYdt(c)=((1-G_srs)*(1-G_ei)*(dG_ese+dG_erse)-(G_ese+G_erse)*(-dG_srs-dG_ei+dG_srs*G_ei+G_srs*dG_ei))/((1-G_srs)*(1-G_ei))^2;
 dZdt(c)=-(dGdt(c,10)*G_rs+G_sr*dGdt(c,8))*(alpha*beta)/(alpha+beta)^2;
 
-dGeedt(c,1)=dG_ee;
-dGeidt(c,1)=dG_ei;
-dGrsdt(c,1)=dG_rs;
-
-
-
-% scatter(real(dG_ee),A_minus,'.','blue')
-% hold on
-% %scatter(real(dG_rs),A_minus,'.','red')
-% %hold on
-% scatter(real(dG_re),A_minus,'.','black')
-% hold on
-% scatter(real(dG_se),A_minus,'.','green')
-% hold on
-
-
-radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
-     dUdt=(real(dXdt))./real(radius);
-     dVdt=(real(dYdt))./real(radius);
-     dXdts=smoothn(real(dUdt),1);
-     dYdts=smoothn(real(dVdt),1);
-     
-     quiver(X,Y,dUdt,dVdt,0.3)
-      hold on
-      
+dGeedt(c,1)=real(dG_ee);
+dGeidt(c,1)=real(dG_ei);
+dGsrsdt(c,1)=real(dG_srs);
 
 end
 
+radius=sqrt(dGeedt.^2 + dGsrsdt.^2);
+dGe=dGeedt./radius;
+dGsrs=dGsrsdt./radius;
 
+dGe_s=smoothn(dGe);
+dGsrs_s=smoothn(dGsrs);
+rad=sqrt(dGe_s.^2 + dGsrs_s.^2);
+dGe_sm=dGe_s./rad;
+dGsrs_sm=dGsrs_s./rad;
 
-end
-
-%quiver3(X,Y,Z,dXdt,dYdt,dZdt,100)
- 
-% 
-% % % % 3D
-%  tent.compute
-%  hold on
-%      radius=sqrt(real(dXdt).^2 + real(dYdt).^2+real(dZdt).^2);
-%     dUdt=(real(dXdt))./real(radius);
-%     dVdt=(real(dYdt))./real(radius);
-%      dWdt=(real(dZdt))./real(radius);
-% %     quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.25)
-% %     %quiver3(real(X),real(Y),real(Z),dXdt,dYdt,dZdt,10)
-% %     % hold on
-% %     % x=linspace(0,1,10);
-% %     % y=1-x;
-% %     hold on 
-% %     tent.compute
-% %     % plot(y,x,'--','color','black')
-% %     hold on
-% %     %scatter3(X,Y,Z)
-% %     xlabel('X')
-% %     ylabel('Y')
-% %     zlabel('Z')
-% %     axis square
- % XY plot
- 
- 
- 
- 
- 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
- 
-%  
-% %   dXdts=smoothn(real(dXdt));
-% %   dYdts=smoothn(real(dYdt));
-%      radius=sqrt(real(dXdt).^2 + real(dYdt).^2);
-%      dUdt=(real(dXdt))./real(radius);
-%      dVdt=(real(dYdt))./real(radius);
-%      dXdts=smoothn(real(dUdt),1);
-%      dYdts=smoothn(real(dVdt),1);
-%       quiver(X,Y,dUdt,dVdt,0.3)
-%      %quiver(X,Y,dXdts,dYdts,'black')
-%      xlabel('X')
-%      ylabel('Y')
-% %        hold on 
-% %      tent.compute
-%      hold on
-%        tent.draw_blobs({'ec','n1'},0.1)
-%        hold on
-% %      
-% %      hold on
-%       %quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.3,'black')
-%       grid off
-%       xlabel('\bf{X}')
-%       ylabel('\bf{Y}')
-%       hold on
-%        patch([1.2 1.2 0],[-0.2 1 1],[0.9 0.9 0.9],'EdgeAlpha',0.2)
-% %      legend
-% %   
-%       %hold on
-%       % tent.surface
-%      view(0,90)
-% %      
-     
-     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
-     
-     
-     
-     
-     
-     
-     
- 
-% YZ plot
-%    radius=sqrt(real(dXdt).^2+real(dZdt).^2 + real(dYdt).^2);
-%     dUdt=(real(dXdt))./real(radius);
-%      dVdt=(real(dYdt))./real(radius);
-%      dWdt=(real(dZdt))./real(radius);
-%      xlabel('Y')
-%      ylabel('Z')
-      
-    
-    % patch([1.2 1.2 0],[-0.2 1 1],[0.9 0.9 0.9],'EdgeAlpha',0.2)
-     
-      
-%      tent.compute
-%      hold on
-% %      tent.surface
-% %      hold on
-%      tent.draw_blobs({'ec','n1'},0.1)
-%      hold on
-     
-     
-%      quiver3(real(X),real(Y),real(Z),dUdt,dVdt,dWdt,0.5,'black')
-%      grid off
-%      xlabel('\bf{X}')
-%      ylabel('\bf{Y}')
-%      zlabel('\bf(Z)')
-     
-     
-     
-    
-
-% plot(f,Qe)
-% hold on
-% plot(f,Qi,'red')
-% hold on
-% plot(f,Qr,'green')
-% hold on
-% plot(f,Qs,'black')
-% hold on
-% plot(f,Qn,'--')
-% freq=w/(2*pi);
-% subplot(1,2,1)
-% plot(freq,dsee,freq,dsei,freq,dses,freq,dsie,freq,dsii,freq,dsis,freq,dsre,freq,dsrs,'--',freq,dsse,'--',freq,dssr,'--',freq,dssn,':')
-% xlabel('f(Hz)')
-% ylabel('Integrand')
-% legend('ds_{ee}/dt','ds_{ei}/dt','ds_{es}/dt','ds_{ie}/dt','ds_{ii}/dt','ds_{is}/dt','ds_{re}/dt','ds_{rs}/dt','ds_{se}/dt','ds_{sr}/dt','ds_{sn}/dt')
-% 
-% subplot(1,2,2)
-% plot(freq,Iee,freq,Iei,freq,Ies,freq,Iie,freq,Iii,freq,Iis,freq,Ire,freq,Irs,'--',freq,Ise,'--',freq,Isr,'--',freq,Isn,':')
-% legend('I_{ee}','I_{ei}','I_{es}','I_{ie}','I_{ii}','I_{is}','I_{re}','I_{rs}','I_{se}','I_{sr}','I_{sn}')
-% xlabel('f_{max}(Hz)')
-% ylabel('Integral')
-
-
-%quiver(nufinal(:,1),nufinal(:,2),real(Ilast(:,1))./sqrt(real(Ilast(:,1)).^2+real(Ilast(:,2).^2)),real(Ilast(:,2))./sqrt(real(Ilast(:,1)).^2+real(Ilast(:,2)).^2),0.25)
-
-
-% sigma=0.006;
-% theta=0.0204;
-% Qmax=340;
-% 
-% rho_a=Q/sigma .*(1-Q/Qmax);
- 
-% %vab=G(1,:)./rho_a;
-% Q_0=linspace(0,340,1000);
-% %Q_x=-sigma*log((Qmax./Q_0) -1)+theta-Q_0;
-% %plot(Q_x,Q_0)
-% plot(Q_0,-sigma*log((Qmax./Q_0)-1)+theta-Q_0)
-%XYZ space
-
+quiver(Gee(index),Gsrs(index),dGe_sm,dGsrs_sm,0.3,'red')

@@ -10,15 +10,15 @@ tp=0.01; %plasticity timescale
 
 A_plus=1;
 %A_minus=1; %CDP
-A_minus=-1;%STDP
-H0=(A_plus + A_minus)*tp; 
+A_minus=-0.5;%STDP
+H0=-(A_plus + A_minus)*tp; 
 H1=(A_plus - A_minus)*tp;
 
 fmax=45;
 nw=1000;
 f = linspace(0,fmax,nw);
 w=2*pi*f;
-Hw=(H0+1i*w.*tp*H1)./(1+w*tp).^2;
+Hw=(H0+1i*w.*tp*H1)./(1+(w*tp).^2);
 dw=w(2)-w(1);
 %G_ab's 5 states, 8 parameters
 G=zeros(30,8);
